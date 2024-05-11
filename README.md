@@ -1,4 +1,4 @@
-# Command and Control Server Implementation README
+# Dropbox C2
 
 ## Overview
 
